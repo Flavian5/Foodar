@@ -73,12 +73,20 @@ def survey():
         #     session['food_region'] = ['European']
         #     session['food_type'] = ['Italian']
         #     session['budget_value'] = ['$$$']
-        data = {
-            'meal_type': list(request.get_json().get('meal_type', 'Vegetarian')),
-            'food_region': list(request.get_json().get('food_region', "European")),
-            'food_type': list(request.get_json().get('food_type', "Italian")),
-            'budget_value': list(request.get_json().get('budget_value', "$$$"))
-        }
+        if not request.get_json():
+            data = {
+                'meal_type': ['Vegetarian'],
+                'food_region': ["European"],
+                'food_type': ["Italian"],
+                'budget_value': ["$$$"]
+            }
+        else:
+            data = {
+                'meal_type': [request.get_json().get('meal_type', 'Vegetarian')],
+                'food_region': [request.get_json().get('food_region', "European")],
+                'food_type': [request.get_json().get('food_type', "Italian")],
+                'budget_value': [request.get_json().get('budget_value', "$$$")]
+            }
         list_recommendations(data)
         return jsonify({"success": True})
     except:
@@ -109,7 +117,7 @@ def list_recommendations(data):
     print(final_query_strings)
     total_results = []
     for query in final_query_strings:
-        total_results = total_results + gps.search(query)
+        total_results = total_results + [gps.search(query)]
         # break  # Just to check and make sure we have the data format correctly
 
     print(len(total_results))
@@ -121,11 +129,13 @@ def list_recommendations(data):
         item_list = item['results']
         restaurant_details = dict()
         for restaurant in item_list:
+            restaurant_details['name'] = restaurant['name']
             restaurant_details["formatted_address"] = restaurant["formatted_address"]
             restaurant_details['latitude'] = restaurant['geometry']['location']['lat']
             restaurant_details['longitude'] = restaurant['geometry']['location']['lng']
-            restaurant_details['photo_url'] = gps.get_photos(restaurant['photos']['photo_reference'])
-            restaurant_details['price_level'] = restaurant['price_level']
+            photos = restaurant['photos']
+            restaurant_details['photo_url'] = gps.get_photos(name=restaurant['name'],photo_reference=photos[0].get('photo_reference'))
+            restaurant_details['price_level'] = restaurant.get('price_level', 2)
             restaurant_details['rating'] = restaurant['rating']
             restaurant_details['num_ratings'] = restaurant['user_ratings_total']
         final_results = final_results + [restaurant_details]

@@ -35,4 +35,4 @@ class GooglePlaceService:
         bucket = storage_client.get_bucket(bucket_name)
         blob = bucket.blob('{}.png'.format(name))
         blob.upload_from_filename('{}.png'.format(name))
-        return blob.generate_signed_url()
+        return blob.generate_signed_url(expiration=10000)
