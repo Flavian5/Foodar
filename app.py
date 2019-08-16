@@ -87,17 +87,17 @@ def list_recommendations():
     gps = GooglePlaceService()
     # Step 1
     # Pulling in the survey results, and turn them into search queries
-    base_restaurant_type = session['food_region'] + " restaurant"
+    base_restaurant_type = session['food_region'][0] + " restaurant"
     query_strings = [meal_type + " " + base_restaurant_type for meal_type in session['meal_type']]
     extended_query_strings = []
     for food_type in session['food_type']:
         extended_query_strings = extended_query_strings + [query + " " + food_type for query in query_strings]
 
     final_query_strings = []
-    for budget_type in session['budget_type']:
-        if budget_type in ["$", "$$"]:
+    for budget_value in session['budget_value']:
+        if budget_value in ["$", "$$"]:
             final_query_strings = final_query_strings + [query + " " + "cheap" for query in extended_query_strings]
-        elif budget_type in ['$$$']:
+        elif budget_value in ['$$$']:
             final_query_strings = final_query_strings + [query + " " + "expensive" for query in extended_query_strings]
 
     print(final_query_strings)
@@ -116,7 +116,7 @@ def list_recommendations():
 
     # Step 4
     # Regeneration
-    pass
+    return jsonify({"success": True})
 
 
 @app.route('/test', methods=['GET'])
