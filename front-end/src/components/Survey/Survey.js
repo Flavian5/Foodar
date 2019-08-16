@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SurveyButton from '../SurveyButton/SurveyButton';
 import Stepper from 'react-stepper-horizontal';
 import apiClient from '../../api';
-
+import Restaurants from '../../views/Restaurants/Restaurants';
 class Survey extends Component {
     
     state = {
@@ -10,12 +10,13 @@ class Survey extends Component {
         meal_type: "",
         food_region: "",
         food_type: "",
-        budget: ""
+        budget_value: ""
     }
 
     componentDidMount(){
 
     }
+
     nextStep = () => {
         this.setState({
             step: this.state.step + 1
@@ -25,7 +26,7 @@ class Survey extends Component {
         this.setState({
             step: this.state.step - 1
         }, () => {
-            console.log(this.state)
+            console.log(this.state);
         })
     }
 
@@ -36,13 +37,14 @@ class Survey extends Component {
             meal_type: this.state.step === 0 ? item : this.state.meal_type,
             food_region: this.state.step === 1 ? item : this.state.food_region,
             food_type: this.state.step === 2 ? item : this.state.food_type,
-            budget: this.state.step === 3 ? item : this.state.budget
+            budget_value: this.state.step === 3 ? item : this.state.budget_value
         }, () => {
             if (this.state.step === 4) {
                 apiClient.post('survey', {
                     ...this.state
                 }).then((res) => {
                     console.log(res);
+                    window.location.href="/restaurants"
                 }).catch((err) => {
                     console.log(err);
                 })
@@ -118,19 +120,19 @@ class Survey extends Component {
 
         let step = getStep();
         return (
-            <div className="survey-menu" style={{borderRadius: 5, padding: '15px 20px', backgroundColor: 'white', paddingBottom: 25}}>
-                <Stepper completeColor={"#EAA55C"} activeColor={"#8D8276"} activeTitleColor={"#8B8072"} titleFontSize={12} steps={ [{title: 'Step One'}, {title: 'Step Two'}, {title: 'Step Three'}, {title: 'Step Four'}] } activeStep={ this.state.step } />
-                <p style={{fontSize: 30, fontWeight: 500, color: '#8D8276', textAlign: 'center'}}>{step.title}</p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', paddingLeft: 50, paddingRight: 50, justifyContent: 'center', maxHeight: 220, overflow: 'auto'}}>
-                        {
-                            step.options.map((item, i) => <div style={{margin: '20px 15px'}}><SurveyButton onClick={() => this.selectItem(item)} title={item}/></div>)
-                        }
+                <div className="survey-menu" style={{borderRadius: 5, padding: '15px 20px', backgroundColor: 'white', paddingBottom: 25}}>
+                    <Stepper completeColor={"#EAA55C"} activeColor={"#8D8276"} activeTitleColor={"#8B8072"} titleFontSize={12} steps={ [{title: 'Step One'}, {title: 'Step Two'}, {title: 'Step Three'}, {title: 'Step Four'}] } activeStep={ this.state.step } />
+                    <p style={{fontSize: 30, fontWeight: 500, color: '#8D8276', textAlign: 'center'}}>{step.title}</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', paddingLeft: 50, paddingRight: 50, justifyContent: 'center', maxHeight: 220, overflow: 'auto'}}>
+                            {
+                                step.options.map((item, i) => <div style={{margin: '20px 15px'}}><SurveyButton onClick={() => this.selectItem(item)} title={item}/></div>)
+                            }
+                    </div>
+                    <div style={{position: 'relative', marginTop: 20, height: 50}}>
+                        {this.state.step > 0 && <button onClick={this.goBack} className="foodar-btn-2">Back</button>}
+                        {/* <button onClick={this.nextStep} style={{position: 'absolute', right: 0}} className="foodar-btn-2">Next</button> */}
+                    </div>
                 </div>
-                <div style={{position: 'relative', marginTop: 20, height: 50}}>
-                    {this.state.step > 0 && <button onClick={this.goBack} className="foodar-btn-2">Back</button>}
-                    {/* <button onClick={this.nextStep} style={{position: 'absolute', right: 0}} className="foodar-btn-2">Next</button> */}
-                </div>
-            </div>
         );
     }
 }
