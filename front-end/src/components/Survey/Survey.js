@@ -26,7 +26,7 @@ class Survey extends Component {
         this.setState({
             step: this.state.step - 1
         }, () => {
-            console.log(this.state)
+            console.log(this.state);
         })
     }
 
