@@ -16,6 +16,7 @@ class Survey extends Component {
     componentDidMount(){
 
     }
+
     nextStep = () => {
         this.setState({
             step: this.state.step + 1
@@ -43,6 +44,7 @@ class Survey extends Component {
                     ...this.state
                 }).then((res) => {
                     console.log(res);
+                    window.location.href="/restaurants"
                 }).catch((err) => {
                     console.log(err);
                 })

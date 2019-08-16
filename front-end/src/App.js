@@ -3,6 +3,7 @@ import {Route} from 'react-router-dom';
 import LoginPage from './views/LoginPage';
 import Styles from './styles/main.scss';
 import MainPage from './views/Main/Main';
+import Restaurants from './views/Restaurants/Restaurants';
 
 class App extends Component {
   render() {
@@ -10,6 +11,8 @@ class App extends Component {
       <div style={{height: '100vh'}}>
         <Route path="/login" exact component={LoginPage}/>
         <Route path="/" exact component={MainPage}/> 
+        <Route path="/restaurants" exact component={Restaurants}/> 
+
       </div>
     );
   }
