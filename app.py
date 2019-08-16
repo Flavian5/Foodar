@@ -8,6 +8,12 @@ from menu_constants import menu, structured_menu
 app = Flask(__name__)
 CORS(app)
 
+SURVEY_DATA = dict()
+SURVEY_DATA['American'] = ['burger', 'pub', 'wings', 'tacos', 'burrito']
+SURVEY_DATA['European'] = ['Italian', 'French', 'German/Austrian', 'Spanish']
+SURVEY_DATA['Middle Eastern'] = ['Hummus', 'Falafel', 'Tabouleh', 'Fattoush', 'Shawarma', 'Kebab']
+SURVEY_DATA['Asian'] = ['Japanese', 'Korean', 'Thai', 'Indian', 'Korean']
+
 
 @app.route('/menu/', methods=['POST'])
 def menu_page():
@@ -74,6 +80,24 @@ def list_recommendations():
     gps = GooglePlaceService()
     # Step 1
     # Pulling in the survey results, and turn them into search queries
+    base_restaurant_type = session['food_region'] + " restaurant"
+    query_strings = [meal_type + " " + base_restaurant_type for meal_type in session['meal_type']]
+    extended_query_strings = []
+    for food_type in session['food_type']:
+        extended_query_strings = extended_query_strings + [query + " " + food_type for query in query_strings]
+
+    final_query_strings = []
+    for budget_type in session['budget_type']:
+        if budget_type in ["$", "$$"]:
+            final_query_strings = final_query_strings + [query + " " + "cheap" for query in extended_query_strings]
+        elif budget_type in ['$$$']:
+            final_query_strings = final_query_strings + [query + " " + "expensive" for query in extended_query_strings]
+
+    total_results = []
+    for query in final_query_strings:
+        total_results = total_results + gps.search(query)
+
+    print(total_results)
 
     # Step 2
     # Parse the results and get an idea
@@ -83,6 +107,7 @@ def list_recommendations():
 
     # Step 4
     # Regeneration
+    pass
 
     return gps.search("japanese restaurants")  # Place holder
 
