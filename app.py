@@ -151,4 +151,4 @@ def test():
 if __name__ == "__main__":
     app.secret_key = 'the music app sucks'
     app.config['SESSION_TYPE'] = 'filesystem'
-    app.run(host="localhost", port=5000, debug=True)
+    app.run(host="0.0.0.0")
