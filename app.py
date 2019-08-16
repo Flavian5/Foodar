@@ -3,9 +3,39 @@ from flask_cors import CORS
 from services.PlaidService import PlaidService
 from services.GooglePlaceService import GooglePlaceService
 import traceback
+from menu_constants import menu, structured_menu
 
 app = Flask(__name__)
 CORS(app)
+
+
+@app.route('/menu/', methods=['POST'])
+def menu_page():
+    try:
+        top_choices = request.get_json().get('top_food_choices', None)
+        recommended = request.get_json().get('food_recommend_by_your_friends', None)
+        top_choices_prices = []
+        top_choices_total_price = 0
+        for choice in top_choices:
+            price = menu.get(choice, '-99999$')
+            top_choices_prices.append(price)
+            top_choices_total_price += float(price.rstrip('$'))
+        recommended_prices = []
+        recommended_total_price = 0
+        for rec in recommended:
+            price = menu.get(rec, '-99999$')
+            recommended_prices.append(price)
+            recommended_total_price += float(price.rstrip('$'))
+        session['top_choices_prices'] = top_choices_prices
+        session['top_choices_total_price'] = top_choices_total_price
+        session['recommended_prices'] = recommended_prices
+        session['recommended_total_price'] = recommended_total_price
+        return jsonify({'success': True, 'menu': structured_menu, 'top_choices_price': top_choices_prices,
+                        'top_choices_total_price': top_choices_total_price, 'recommended_prices': recommended_prices,
+                        'recommended_total_price': recommended_total_price})
+    except:
+        traceback.print_exc()
+        return jsonify({'success': False})
 
 
 @app.route('/survey/budget/', methods=['POST'])
@@ -15,6 +45,7 @@ def budget():
         session['budget_value'] = budget_value
         return jsonify({'success': True, 'received': budget_value})
     except:
+        traceback.print_exc()
         return jsonify({'success': False})
 
 
