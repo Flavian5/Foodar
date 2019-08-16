@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
 import SurveyButton from '../SurveyButton/SurveyButton';
 import Stepper from 'react-stepper-horizontal';
+import apiClient from '../../api';
 
 class Survey extends Component {
+    
     state = {
         step: 0,
-        prefType: "",
-
+        meal_type: "",
+        food_region: "",
+        food_type: "",
+        budget: ""
     }
 
+    componentDidMount(){
+
+    }
     nextStep = () => {
         this.setState({
             step: this.state.step + 1
@@ -26,8 +33,22 @@ class Survey extends Component {
         console.log(item);
         this.setState({
             step: this.state.step + 1,
-            prefType: this.state.step === 1 ? item : this.state.prefType
+            meal_type: this.state.step === 0 ? item : this.state.meal_type,
+            food_region: this.state.step === 1 ? item : this.state.food_region,
+            food_type: this.state.step === 2 ? item : this.state.food_type,
+            budget: this.state.step === 3 ? item : this.state.budget
+        }, () => {
+            if (this.state.step === 4) {
+                apiClient.post('survey', {
+                    ...this.state
+                }).then((res) => {
+                    console.log(res);
+                }).catch((err) => {
+                    console.log(err);
+                })
+            }
         })
+
         
     }
     render() {
@@ -65,10 +86,10 @@ class Survey extends Component {
             options: ["$", "$$", "$$$"]
         }
 
-        let step4 = {
-            title: "Dine-in or Takeout?",
-            options: ["Dine-in", "Takeout"]
-        }
+        // let step4 = {
+        //     title: "Dine-in or Takeout?",
+        //     options: ["Dine-in", "Takeout"]
+        // }
 
         let foodType = {
             "American": AmericanStep,
@@ -86,12 +107,11 @@ class Survey extends Component {
                 return step1;
             }
             if(step === 2) {
-                return foodType[this.state.prefType]
+                return foodType[this.state.food_region]
             }
-            if(step === 3) {
-                return step3
-            }
-            return step4;
+            return step3
+            
+            // return step4;
         }
 
 

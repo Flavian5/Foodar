@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import SurveyButton from '../../components/SurveyButton/SurveyButton';
 import Survey from '../../components/Survey/Survey';
 
 class MainPage extends Component {
+
     render() {
         return (
             <div className="main-page-container">
