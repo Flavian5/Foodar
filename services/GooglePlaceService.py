@@ -4,7 +4,7 @@ import urllib.parse
 
 
 class GooglePlaceService:
-    string = "ttAIzaSyCoAfxtpSsCGFcR2WxQDCeWqO9BOFFr3xstt"
+    string = "ttAIzaSyDclMpSoN3Cb53qYHaSb-QjrpCc81y7TIYtt"
     latitude = 43.6404
     longitude = -79.3995
     string = string.split('tt')[1]

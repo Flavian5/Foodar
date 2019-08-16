@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
-from services.PlaidService import PlaidService
+# from services.PlaidService import PlaidService
 from services.GooglePlaceService import GooglePlaceService
 import traceback
 from menu_constants import menu, structured_menu
@@ -51,16 +51,17 @@ def menu_page():
 @app.route('/survey', methods=['POST'])
 def survey():
     try:
-        meal_type = request.get_json().get('meal_type', None)
-        session['meal_type'] = meal_type
-        food = request.get_json().get('food_region', None)
-        session['food_region'] = food
-        food_type = request.get_json().get('food_type', None)
-        session['food_type'] = food_type
-        budget_value = request.get_json().get('budget', None)
-        session['budget_value'] = budget_value
-        return jsonify({'success': True, 'meal_type': meal_type, 'food_region': food, 'food_type': food_type,
-                        'budget': budget_value})
+        if "meal_type" in session:
+            session['meal_type'] = request.get_json().get('meal_type', None)
+        if "food_region" in session:
+            session['food_region'] = request.get_json().get('food_region', None)
+        if "food_type" in session:
+            session['food_type'] = request.get_json().get('food_type', None)
+        if "budget_value" in session:
+            session['budget_value'] = request.get_json().get('budget_value', None)
+
+        return jsonify({"success": True})
+
     except:
         traceback.print_exc()
         return jsonify({'success': False})
@@ -71,7 +72,19 @@ def list_recommendations():
     """Based on the session variable values, including survey results, bank balances, get lists
     of restaurants from Google Places API, and combine & return the results"""
     gps = GooglePlaceService()
-    return gps.search("japanese restaurants") # Place holder
+    # Step 1
+    # Pulling in the survey results, and turn them into search queries
+
+    # Step 2
+    # Parse the results and get an idea
+
+    # Step 3
+    # Combine the list of restaurant results
+
+    # Step 4
+    # Regeneration
+
+    return gps.search("japanese restaurants")  # Place holder
 
 
 @app.route('/test', methods=['GET'])
