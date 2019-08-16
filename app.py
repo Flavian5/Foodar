@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
+from services.PlaidService import PlaidService
+from services.GooglePlaceService import GooglePlaceService
 import traceback
 
 app = Flask(__name__)
@@ -47,6 +49,14 @@ def meal_type():
     except:
         traceback.print_exc()
         return jsonify({'success': False})
+
+
+@app.route('/recommend', methods=['GET'])
+def list_recommendations():
+    """Based on the session variable values, including survey results, bank balances, get lists
+    of restaurants from Google Places API, and combine & return the results"""
+    gps = GooglePlaceService()
+    return gps.search("japanese restaurants") # Place holder
 
 
 @app.route('/test', methods=['GET'])
