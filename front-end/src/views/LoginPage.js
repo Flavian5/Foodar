@@ -24,7 +24,7 @@ class Login extends Component {
                                 {/* <img src="https://cdn4.iconfinder.com/data/icons/36-slim-icons/87/calender.png" id="username_input_img"/> */}
                             </div>
                             <p style={{textAlign: 'right', cursor: 'pointer'}}>Sign Up</p>
-                            <button style={{width: '100%', cursor: 'pointer'}} type="button" className="foodar-btn foodar-btn-reg">Login</button>
+                            <button onClick={() => {window.location.href = '/'}} style={{width: '100%', cursor: 'pointer'}} type="button" className="foodar-btn foodar-btn-reg">Login</button>
                             <p style={{textAlign: 'center'}}>Sign in with your social network</p>
                             <div className="flex-box" style={{marginBottom: 15}}>
                                 <div className="flex-1" style={{paddingRight: 5}}>
