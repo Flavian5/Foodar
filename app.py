@@ -1,37 +1,48 @@
-from flask import Flask, jsonify, url_for, redirect
+from flask import Flask, jsonify, url_for, redirect, request, session
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
 
-@app.route('survey/budget')
-def budget(how_much):
+@app.route('survey/budget/', method=['POST'])
+def budget():
+    session['budget'] = request.get_json().get('budget', None)
+    return redirect(url_for('test'))  # TODO: change to whatever the next page will be
 
 
-@app.route('survey/asian_food')
-def asian_food(selection):
-    selected = {selection: selection}
+@app.route('survey/asian_food/', method=['POST'])
+def asian_food():
+    food_types = request.get_json().get('food_type', None)
+    session['food_type'] = food_types
     return redirect(url_for('budget'))
 
 
-@app.route('survey/middle_eastern_food')
-def middle_eastern_food(selection):
+@app.route('survey/middle_eastern_food/', method=['POST'])
+def middle_eastern_food():
+    food_types = request.get_json().get('food_type', None)
+    session['food_type'] = food_types
     return redirect(url_for('budget'))
 
 
-@app.route('survey/european_food')
-def european_food(selection):
+@app.route('survey/european_food/', method=['POST'])
+def european_food():
+    food_types = request.get_json().get('food_type', None)
+    session['food_type'] = food_types
     return redirect(url_for('budget'))
 
 
-@app.route('survey/american_food')
-def american_food(selection):
+@app.route('survey/american_food/', method=['POST'])
+def american_food():
+    food_types = request.get_json().get('food_type', None)
+    session['food_type'] = food_types
     return redirect(url_for('budget'))
 
 
-@app.route('/survey/food_type')
-def food_type(food):
+@app.route('/survey/food_region/', method=['POST'])
+def food_type():
+    food = request.get_json().get('food_region', None)
+    session['food_region'] = food
     if food == 'American':
         return redirect(url_for('american_food'))
     elif food == 'European':
@@ -42,9 +53,10 @@ def food_type(food):
         return redirect(url_for('asian_food'))
 
 
-@app.route('/survey/meal_type')
-def meal_type(selected):
-    return redirect(url_for())
+@app.route('/survey/meal_type/', method=['POST'])
+def meal_type():
+    session['meal_type'] = request.get_json().get('meal_type', None)
+    return redirect(url_for('food_type'))
 
 
 @app.route('/survey')
