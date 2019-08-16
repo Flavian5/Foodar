@@ -4,6 +4,45 @@ import traceback
 
 app = Flask(__name__)
 CORS(app)
+menu = {
+    "Egg Mcmuffin Burger": "10.50$",
+    "Beyond Meat Burger": "8.40$",
+    "Tofu Burger": "8.00$",
+    "Chickpea Burger": "11.00$",
+    "Hashbrown": "5.00$",
+    "French Fries": "6.00$",
+    "Tofu Salad": "7.00$",
+    "Vegan Pizza": "11.80$",
+    "Vegan Mac and Cheese": "9.00$",
+    "Spaghetti": "10.30$",
+    "Lentil Soup": "7.50$",
+    "Hummus Quesadillas": "9.30$"
+}
+
+
+@app.route('/menu/', methods=['POST'])
+def menu_page():
+    try:
+        top_choices = request.get_json().get('top_food_choices', None)
+        recommended = request.get_json().get('food_recommend_by_your_friends', None)
+        top_choices_prices = []
+        top_choices_total_price = 0
+        for choice in top_choices:
+            price = menu.get(choice, '-99999$')
+            top_choices_prices.append(price)
+            top_choices_total_price += float(price.rstrip('$'))
+        recommended_prices = []
+        recommended_total_price = 0
+        for rec in recommended:
+            price = menu.get(rec, '-99999$')
+            recommended_prices.append(price)
+            recommended_total_price += float(price.rstrip('$'))
+        return jsonify({'success': True, 'top_choices_price': top_choices_prices,
+                        'top_choices_total_price': top_choices_total_price, 'recommended_prices': recommended_prices,
+                        'recommended_total_price': recommended_total_price})
+    except:
+        traceback.print_exc()
+        return jsonify({'success': False})
 
 
 @app.route('/survey/budget/', methods=['POST'])
@@ -13,6 +52,7 @@ def budget():
         session['budget_value'] = budget_value
         return jsonify({'success': True, 'received': budget_value})
     except:
+        traceback.print_exc()
         return jsonify({'success': False})
 
 
