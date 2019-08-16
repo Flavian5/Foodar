@@ -5,7 +5,11 @@ import apiClient from '../../api';
 class Restaurants extends Component {
 
     componentDidMount() {
-        
+        apiClient.get('/recommend').then((res) => {
+            console.log(res)
+        }).catch((err) => {
+            console.log(err)
+        })
     }
 
     render() {
