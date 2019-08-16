@@ -57,17 +57,24 @@ def menu_page():
 @app.route('/survey', methods=['POST'])
 def survey():
     try:
-        if "meal_type" in session:
-            session['meal_type'] = request.get_json().get('meal_type', None)
-        if "food_region" in session:
-            session['food_region'] = request.get_json().get('food_region', None)
-        if "food_type" in session:
-            session['food_type'] = request.get_json().get('food_type', None)
-        if "budget_value" in session:
-            session['budget_value'] = request.get_json().get('budget_value', None)
+        if "meal_type" in request.get_json():
+            session['meal_type'] = list(request.get_json().get('meal_type', None))
+        if "food_region" in request.get_json():
+            session['food_region'] = list(request.get_json().get('food_region', None))
+        if "food_type" in request.get_json():
+            session['food_type'] = list(request.get_json().get('food_type', None))
+        if "budget_value" in request.get_json():
+            session['budget_value'] = list(request.get_json().get('budget_value', None))
+
+        if (session.get('meal_type') is None) and (session.get('food_region') is None) and (session.get('food_type') is None) \
+                and (session.get('budget_value') is None):
+            # In case there's nothing set for session
+            session['meal_type'] = ['Vegetarian']
+            session['food_region'] = ['European']
+            session['food_type'] = ['Italian']
+            session['budget_value'] = ['$$$']
 
         return jsonify({"success": True})
-
     except:
         traceback.print_exc()
         return jsonify({'success': False})
@@ -93,12 +100,14 @@ def list_recommendations():
         elif budget_type in ['$$$']:
             final_query_strings = final_query_strings + [query + " " + "expensive" for query in extended_query_strings]
 
+    print(final_query_strings)
     total_results = []
     for query in final_query_strings:
         total_results = total_results + gps.search(query)
+        break  # Just to check and make sure we have the data format correctly
 
-    print(total_results)
-
+    print(len(total_results))
+    print(total_results[0])
     # Step 2
     # Parse the results and get an idea
 
