@@ -1,67 +1,52 @@
-from flask import Flask, jsonify, url_for, redirect, request, session
+from flask import Flask, jsonify, request, session
 from flask_cors import CORS
+import traceback
 
 app = Flask(__name__)
 CORS(app)
 
 
-@app.route('survey/budget/', method=['POST'])
+@app.route('/survey/budget/', methods=['POST'])
 def budget():
-    session['budget'] = request.get_json().get('budget', None)
-    return redirect(url_for('test'))  # TODO: change to whatever the next page will be
+    try:
+        budget_value = request.get_json().get('budget', None)
+        session['budget_value'] = budget_value
+        return jsonify({'success': True, 'received': budget_value})
+    except:
+        return jsonify({'success': False})
 
 
-@app.route('survey/asian_food/', method=['POST'])
-def asian_food():
-    food_types = request.get_json().get('food_type', None)
-    session['food_type'] = food_types
-    return redirect(url_for('budget'))
+@app.route('/survey/<food_region>_food/', methods=['POST'])
+def types_of_food():
+    try:
+        food_types = request.get_json().get('food_type', None)
+        session['food_type'] = food_types
+        return jsonify({'success': True, 'received': food_types})
+    except:
+        traceback.print_exc()
+        return jsonify({'success': False})
 
 
-@app.route('survey/middle_eastern_food/', method=['POST'])
-def middle_eastern_food():
-    food_types = request.get_json().get('food_type', None)
-    session['food_type'] = food_types
-    return redirect(url_for('budget'))
+@app.route('/survey/food_region/', methods=['POST'])
+def food_region():
+    try:
+        food = request.get_json().get('food_region', None)
+        session['food_region'] = food
+        return jsonify({'success': True, 'received': food})
+    except:
+        traceback.print_exc()
+        return jsonify({'success': False})
 
 
-@app.route('survey/european_food/', method=['POST'])
-def european_food():
-    food_types = request.get_json().get('food_type', None)
-    session['food_type'] = food_types
-    return redirect(url_for('budget'))
-
-
-@app.route('survey/american_food/', method=['POST'])
-def american_food():
-    food_types = request.get_json().get('food_type', None)
-    session['food_type'] = food_types
-    return redirect(url_for('budget'))
-
-
-@app.route('/survey/food_region/', method=['POST'])
-def food_type():
-    food = request.get_json().get('food_region', None)
-    session['food_region'] = food
-    if food == 'American':
-        return redirect(url_for('american_food'))
-    elif food == 'European':
-        return redirect(url_for('european_food'))
-    elif food == 'Middle Eastern':
-        return redirect(url_for('middle_eastern_food'))
-    else:
-        return redirect(url_for('asian_food'))
-
-
-@app.route('/survey/meal_type/', method=['POST'])
+@app.route('/survey/meal_type/', methods=['POST'])
 def meal_type():
-    session['meal_type'] = request.get_json().get('meal_type', None)
-    return redirect(url_for('food_type'))
-
-
-@app.route('/survey')
-def survey():
-    return redirect(url_for('meal_type'))
+    try:
+        received = request.get_json().get('meal_type', None)
+        session['meal_type'] = received
+        return jsonify({'success': True, 'received': received})
+    except:
+        traceback.print_exc()
+        return jsonify({'success': False})
 
 
 @app.route('/test', methods=['GET'])
@@ -70,4 +55,6 @@ def test():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.secret_key = 'the music app sucks'
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.run(host="localhost", port=5000, debug=True)
