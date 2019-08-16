@@ -109,8 +109,6 @@ def list_recommendations():
     # Regeneration
     pass
 
-    return gps.search("japanese restaurants")  # Place holder
-
 
 @app.route('/test', methods=['GET'])
 def test():
