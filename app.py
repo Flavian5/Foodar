@@ -12,6 +12,7 @@ def menu_page():
     try:
         top_choices = request.get_json().get('top_food_choices', None)
         recommended = request.get_json().get('food_recommend_by_your_friends', None)
+        menu_items = request.get_json().get('menu_items', None)
         top_choices_prices = []
         top_choices_total_price = 0
         for choice in top_choices:
@@ -24,13 +25,22 @@ def menu_page():
             price = menu.get(rec, '-99999$')
             recommended_prices.append(price)
             recommended_total_price += float(price.rstrip('$'))
+        menu_items_prices =[]
+        menu_items_total_price = 0
+        for item in menu_items:
+            price = menu.get(item, '-99999$')
+            menu_items_prices.append(price)
+            menu_items_total_price += float(price.rstrip('$'))
         session['top_choices_prices'] = top_choices_prices
         session['top_choices_total_price'] = top_choices_total_price
         session['recommended_prices'] = recommended_prices
         session['recommended_total_price'] = recommended_total_price
+        session['menu_items_prices'] = menu_items_prices
+        session['menu_items_total_price'] = menu_items_total_price
         return jsonify({'success': True, 'menu': structured_menu, 'top_choices_price': top_choices_prices,
                         'top_choices_total_price': top_choices_total_price, 'recommended_prices': recommended_prices,
-                        'recommended_total_price': recommended_total_price})
+                        'recommended_total_price': recommended_total_price, 'menu_items_prices': menu_items_prices,
+                        'menu_items_total_price': menu_items_total_price})
     except:
         traceback.print_exc()
         return jsonify({'success': False})
