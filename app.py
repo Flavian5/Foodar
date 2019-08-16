@@ -11,7 +11,7 @@ CORS(app)
 def menu_page():
     try:
         top_choices = request.get_json().get('top_food_choices', None)
-        recommended = request.get_json().get('food_recommend_by_your_friends', None)
+        recommended = request.get_json().get('food_recommended_by_your_friends', None)
         menu_items = request.get_json().get('menu_items', None)
         top_choices_prices = []
         top_choices_total_price = 0
