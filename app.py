@@ -57,17 +57,24 @@ def menu_page():
 @app.route('/survey', methods=['POST'])
 def survey():
     try:
-        if "meal_type" in session:
-            session['meal_type'] = request.get_json().get('meal_type', None)
-        if "food_region" in session:
-            session['food_region'] = request.get_json().get('food_region', None)
-        if "food_type" in session:
-            session['food_type'] = request.get_json().get('food_type', None)
-        if "budget_value" in session:
-            session['budget_value'] = request.get_json().get('budget_value', None)
+        if "meal_type" in request.get_json():
+            session['meal_type'] = list(request.get_json().get('meal_type', None))
+        if "food_region" in request.get_json():
+            session['food_region'] = list(request.get_json().get('food_region', None))
+        if "food_type" in request.get_json():
+            session['food_type'] = list(request.get_json().get('food_type', None))
+        if "budget_value" in request.get_json():
+            session['budget_value'] = list(request.get_json().get('budget_value', None))
+
+        if (session.get('meal_type') is None) and (session.get('food_region') is None) and (session.get('food_type') is None) \
+                and (session.get('budget_value') is None):
+            # In case there's nothing set for session
+            session['meal_type'] = ['Vegetarian']
+            session['food_region'] = ['European']
+            session['food_type'] = ['Italian']
+            session['budget_value'] = ['$$$']
 
         return jsonify({"success": True})
-
     except:
         traceback.print_exc()
         return jsonify({'success': False})
@@ -80,25 +87,27 @@ def list_recommendations():
     gps = GooglePlaceService()
     # Step 1
     # Pulling in the survey results, and turn them into search queries
-    base_restaurant_type = session['food_region'] + " restaurant"
+    base_restaurant_type = session['food_region'][0] + " restaurant"
     query_strings = [meal_type + " " + base_restaurant_type for meal_type in session['meal_type']]
     extended_query_strings = []
     for food_type in session['food_type']:
         extended_query_strings = extended_query_strings + [query + " " + food_type for query in query_strings]
 
     final_query_strings = []
-    for budget_type in session['budget_type']:
-        if budget_type in ["$", "$$"]:
+    for budget_value in session['budget_value']:
+        if budget_value in ["$", "$$"]:
             final_query_strings = final_query_strings + [query + " " + "cheap" for query in extended_query_strings]
-        elif budget_type in ['$$$']:
+        elif budget_value in ['$$$']:
             final_query_strings = final_query_strings + [query + " " + "expensive" for query in extended_query_strings]
 
+    print(final_query_strings)
     total_results = []
     for query in final_query_strings:
         total_results = total_results + gps.search(query)
+        break  # Just to check and make sure we have the data format correctly
 
-    print(total_results)
-
+    print(len(total_results))
+    print(total_results[0])
     # Step 2
     # Parse the results and get an idea
 
@@ -107,7 +116,7 @@ def list_recommendations():
 
     # Step 4
     # Regeneration
-    pass
+    return jsonify({"success": True})
 
 
 @app.route('/test', methods=['GET'])
