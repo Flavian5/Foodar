@@ -48,45 +48,19 @@ def menu_page():
         return jsonify({'success': False})
 
 
-@app.route('/survey/budget/', methods=['POST'])
-def budget():
+@app.route('/survey', methods=['POST'])
+def survey():
     try:
-        budget_value = request.get_json().get('budget', None)
-        session['budget_value'] = budget_value
-        return jsonify({'success': True, 'received': budget_value})
-    except:
-        traceback.print_exc()
-        return jsonify({'success': False})
-
-
-@app.route('/survey/<food_region>_food/', methods=['POST'])
-def types_of_food():
-    try:
-        food_types = request.get_json().get('food_type', None)
-        session['food_type'] = food_types
-        return jsonify({'success': True, 'received': food_types})
-    except:
-        traceback.print_exc()
-        return jsonify({'success': False})
-
-
-@app.route('/survey/food_region/', methods=['POST'])
-def food_region():
-    try:
+        meal_type = request.get_json().get('meal_type', None)
+        session['meal_type'] = meal_type
         food = request.get_json().get('food_region', None)
         session['food_region'] = food
-        return jsonify({'success': True, 'received': food})
-    except:
-        traceback.print_exc()
-        return jsonify({'success': False})
-
-
-@app.route('/survey/meal_type/', methods=['POST'])
-def meal_type():
-    try:
-        received = request.get_json().get('meal_type', None)
-        session['meal_type'] = received
-        return jsonify({'success': True, 'received': received})
+        food_type = request.get_json().get('food_type', None)
+        session['food_type'] = food_type
+        budget_value = request.get_json().get('budget', None)
+        session['budget_value'] = budget_value
+        return jsonify({'success': True, 'meal_type': meal_type, 'food_region': food, 'food_type': food_type,
+                        'budget': budget_value})
     except:
         traceback.print_exc()
         return jsonify({'success': False})
